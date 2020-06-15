@@ -1,0 +1,37 @@
+<?xml version="1.0"  encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mikes.nolorry.mapper.basic.DictMapper">
+
+	<resultMap type="com.mikes.nolorry.model.basic.Dict"
+		id="DictResultMap">
+		<id property="dictId" column="dict_id" />
+		<result property="typeId" column="type_id" />
+		<result property="code" column="code" />
+		<result property="text" column="text" />
+	</resultMap>
+
+	<insert id="create"
+		parameterType="com.mikes.nolorry.model.basic.Dict"
+		useGeneratedKeys="true" keyProperty="dictId" keyColumn="dict_id">
+		insert into
+		t_basic_dict (type_id,code,text) VALUES (#{typeId},#{code},#{text})
+	</insert>
+
+	<select id="findById" resultMap="DictResultMap">
+		select dict_id,type_id,code,text
+		from t_basic_dict where dict_id=#{dictId}
+	</select>
+
+	<select id="findByTypeId" resultMap="DictResultMap">
+		select
+		dict_id,type_id,code,text
+		from t_basic_dict where type_id=#{typeId}
+	</select>
+
+	<select id="existDict" resultType="int"
+		parameterType="com.mikes.nolorry.model.basic.Dict">
+		select count(1) from t_basic_dict where
+		type_id=#{typeId} and (code=#{code} or text=#{text})
+	</select>
+</mapper>

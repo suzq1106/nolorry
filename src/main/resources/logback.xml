@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="HOME_LOG" value="D://java/logs" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{359} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="INFOLOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 过滤日志 -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>DENY</onMatch>  <!-- 如果命中就禁止这条日志 -->
+			<onMismatch>ACCEPT</onMismatch>  <!-- 如果没有命中就使用这条规则 -->
+		</filter>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{359} - %msg%n
+			</pattern>
+			<charset>utf-8</charset>
+		</encoder>
+		<file>${HOME_LOG}/iotteckcloud.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${HOME_LOG}/nolorryship.log.%i</fileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>10MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<appender name="ERRORLOG"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 过滤日志 -->
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{359} - %msg%n
+			</pattern>
+			<charset>utf-8</charset>
+		</encoder>
+		<file>${HOME_LOG}/iotteckcloud-error.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${HOME_LOG}/nolorryship-error.log.%i
+			</fileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>10MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="INFOLOG" />
+		<appender-ref ref="ERRORLOG" />
+	</root>
+</configuration>
