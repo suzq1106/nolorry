@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mikes.nolorry.common.BasicLog;
+import com.mikes.nolorry.common.ExcludeAuth;
 import com.mikes.nolorry.common.OptType;
 import com.mikes.nolorry.model.basic.Dict;
 import com.mikes.nolorry.service.basic.IDictService;
@@ -49,6 +50,7 @@ public class DictController {
 		return ResponseEntity.ok(result);
 	}
 
+	@ExcludeAuth
 	@GetMapping("/findByTypeId/{typeId}")
 	@BasicLog(optType = OptType.QUERY, action = "字典-查询", actionDesc = "根据字典类型查询字典")
 	public ResponseEntity<List<Dict>> findByTypeId(@PathVariable Integer typeId) throws Exception {

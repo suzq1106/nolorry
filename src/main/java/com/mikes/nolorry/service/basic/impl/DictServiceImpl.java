@@ -1,11 +1,12 @@
 package com.mikes.nolorry.service.basic.impl;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -50,15 +51,17 @@ public class DictServiceImpl implements IDictService {
 
 	@Override
 	public List<Dict> findByTypeId(Integer typeId) {
-		ListOperations<Object, Object> listOperations = objectRedisTemplate.opsForList();
-
-		List dicts = listOperations.range(RedisKeyPrefix.DICT_TYPE + typeId, 0, -1);
+		BoundListOperations ops = objectRedisTemplate.boundListOps(RedisKeyPrefix.DICT_TYPE + typeId);
+		List dicts = ops.range(0, -1);
 		if (dicts == null || dicts.size() == 0) {
 
 			dicts = dictMapper.findByTypeId(typeId);
 
 			if (dicts != null && dicts.size() > 0) {
-				listOperations.rightPushAll(RedisKeyPrefix.DICT_TYPE + typeId, dicts);
+				for (int i = 0; i < dicts.size(); i++) {
+					ops.rightPush(dicts.get(i));
+				}
+				ops.expire(60, TimeUnit.SECONDS);
 			}
 		}
 
